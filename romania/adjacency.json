@@ -1,0 +1,88 @@
+{
+    "Timisoara": [
+        "Arad", 
+        "Lugoj"
+    ], 
+    "Bucharest": [
+        "Fagaras", 
+        "Giurgiu", 
+        "Pitesti", 
+        "Urziceni"
+    ], 
+    "Lugoj": [
+        "Mehadia", 
+        "Timisoara"
+    ], 
+    "Vaslui": [
+        "Iasi", 
+        "Urziceni"
+    ], 
+    "Dobreta": [
+        "Craiova", 
+        "Mehadia"
+    ], 
+    "Pitesti": [
+        "Bucharest", 
+        "Craiova", 
+        "Rimnicu Vilcea"
+    ], 
+    "Craiova": [
+        "Dobreta", 
+        "Pitesti", 
+        "Rimnicu Vilcea"
+    ], 
+    "Eforie": [
+        "Hirsova"
+    ], 
+    "Hirsova": [
+        "Eforie", 
+        "Urziceni"
+    ], 
+    "Fagaras": [
+        "Bucharest", 
+        "Sibiu"
+    ], 
+    "Sibiu": [
+        "Arad", 
+        "Fagaras", 
+        "Oradea", 
+        "Rimnicu Vilcea"
+    ], 
+    "Giurgiu": [
+        "Bucharest"
+    ], 
+    "Oradea": [
+        "Sibiu", 
+        "Zerind"
+    ], 
+    "Iasi": [
+        "Neamt", 
+        "Vaslui"
+    ], 
+    "Mehadia": [
+        "Dobreta", 
+        "Lugoj"
+    ], 
+    "Arad": [
+        "Sibiu", 
+        "Timisoara", 
+        "Zerind"
+    ], 
+    "Zerind": [
+        "Arad", 
+        "Oradea"
+    ], 
+    "Urziceni": [
+        "Bucharest", 
+        "Hirsova", 
+        "Vaslui"
+    ], 
+    "Neamt": [
+        "Iasi"
+    ], 
+    "Rimnicu Vilcea": [
+        "Craiova", 
+        "Pitesti", 
+        "Sibiu"
+    ]
+}

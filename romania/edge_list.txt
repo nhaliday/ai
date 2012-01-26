@@ -1,0 +1,23 @@
+Oradea,Zerind
+Arad,Zerind
+Arad,Timisoara
+Lugoj,Timisoara
+Lugoj,Mehadia
+Dobreta,Mehadia
+Craiova,Dobreta
+Craiova,Rimnicu Vilcea
+Rimnicu Vilcea,Sibiu
+Arad,Sibiu
+Oradea,Sibiu
+Fagaras,Sibiu
+Bucharest,Fagaras
+Pitesti,Rimnicu Vilcea
+Craiova,Pitesti
+Bucharest,Pitesti
+Bucharest,Giurgiu
+Bucharest,Urziceni
+Hirsova,Urziceni
+Eforie,Hirsova
+Urziceni,Vaslui
+Iasi,Vaslui
+Iasi,Neamt

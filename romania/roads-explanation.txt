@@ -1,0 +1,27 @@
+The first line of the roads.txt file is the length of the node numbers. This
+will be referred to as 'zfill'.
+
+Note that this data is adapted from Census Bureau data; I can't vouch for its
+accuracy. In the course of working with it, I have observed: non-numeric
+addresses, address or zip code slots completely filled with whitespace,
+multiple road segments claiming the same address range, bike trails (the W&OD
+specifically) marked as roads, etc. The Census Feature Code mentioned is
+described in full at the Tiger-Line technical documentation at
+'http://www.census.gov/geo/www/tiger/tiger2006se/TGR06SE.pdf'; it provides
+information about the type of road. BE WARNED: THIS IS NOT ALWAYS ACCURATE.
+
+Road Name: [0:30]
+Road Type: [30:34]
+Longitude 1: [34:44]
+Latitude 1: [44:53]
+Longitude 2: [53:63]
+Latitude 2: [63:72]
+Census Feature Code: [72:75]
+Start Address (right side): [75:86]
+End Address (right side): [86:97]
+Start Address (left side): [97:108]
+End Address (left side): [108:119]
+Start Zip Code: [119:124]
+End Zip Code: [124:129]
+Node 1 ID: [129:(129+zfill)]
+Node 2 ID: [(129+zfill):(129+(2*zfill))]
