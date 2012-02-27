@@ -10,33 +10,15 @@ from os import path
 import argparse
 
 import scipy as sp
+import numpy as np
 
 
-GRAYSCALE = sp.array([.30, .59, .11])
-GAUSSIAN = sp.array([[1, 2, 1],
-                     [2, 4, 2],
-                     [1, 2, 1]])
-GX = sp.array([[-1, 0, 1],
-               [-2, 0, 2],
-               [-1, 0, 1]])
-GY = sp.array([[1, 2, 1],
-               [0, 0, 0],
-               [-1, -2, -2]])
+GRAYSCALE = np.array([.30, .59, .11])
 
 
-def grayscale(arr):
-    return (arr[:, :, 0] * GRAYSCALE[0] + arr[:, :, 1] * GRAYSCALE[1] +
-            arr[:, :, 2] * GRAYSCALE[2]).astype(sp.int32)
-
-def apply(arr, mask):
-    arr = sp.zeros(arr.shape)
-    for row in range(1, arr.shape[0] - 1):
-        for col in range(1, arr.shape[1] - 1):
-            val = 0
-            orig = (1, 1)
-            for r in range(-1, 2):
-                for c in range(-1, 2):
-                    
+def grayscale(arr, gray=GRAYSCALE):
+    return (arr[:, :, 0] * gray[0] + arr[:, :, 1] * gray[1] +
+            arr[:, :, 2] * gray[2]).astype(np.int32)
 
 
 def main():
@@ -51,7 +33,7 @@ def main():
 
         M, N, scale = map(int, data[1:4])
 
-        pixels = sp.array(data[4:], dtype=sp.int32)
+        pixels = np.array(data[4:], dtype=np.int32)
         rgb = pixels.reshape(N, M, 3)
         gray = grayscale(rgb)
         sgray = gray.astype('|S{}'.format(len(str(scale))))
