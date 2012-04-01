@@ -5,7 +5,7 @@
 
 
 import random
-
+import math
 
 def neighbors(r, c, rows, cols):
     for dr in range(-1, 1 + 1):
@@ -26,7 +26,7 @@ class Population:
     def __init__(self, rows, cols):
         self.rows = rows
         self.cols = cols
-`       self.matrix = [[BLANK] * cols] * rows
+`       self.matrix = [[BLANK] * cols for i in range(rows)]
         self.allsatisfied = False
 
         # populate the matrix
@@ -57,8 +57,23 @@ class Population:
                 return m >= 3
         return True
 
-    def displace(self, r, c):
-        pass
+    def better(self, r, c):
+        for r_ in range(self.rows):
+            for c_ in range(self.cols):
+                if self.matrix[r_][c_] == BLANK:
+                    self.matrix[r_][c_] = self.matrix[r][c]
+                    ok = self.satisfied(r_, c_):
+                    self.matrix[r_][c_] = BLANK
+                    if ok:
+                        yield r_, c_
+
+    def best(self, r, c):
+        minr, minc, d = -1, -1, float('inf')
+        for r_, c_ in self.better(r, c):
+            d_ = math.hypot(r_ - r, c_ - c)
+            if d_ < d:
+                minr, minc, d = r_, c_, d_
+        return minr, minc
 
     def shuffle():
         self.allsatisfied = True
@@ -66,5 +81,8 @@ class Population:
             for c in range(self.cols):
                 if not self.satisfied(r, c):
                     self.allsatisfied = False
-                    self.displace(r, c)
+                    r_, c_ = self.best(r, c)
+                    assert (r_, c_) != (-1, -1)
+                    self.matrix[r_][c_] = self.matrix[r][c]
+                    self.matrix[r][c] = BLANK
 
