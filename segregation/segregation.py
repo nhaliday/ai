@@ -6,31 +6,33 @@
 
 import random
 import math
+import copy
+import pprint
+
+
+X = 'X'
+O = 'O'
+BLANK = ' '
+
 
 def neighbors(r, c, rows, cols):
-    for dr in range(-1, 1 + 1):
-        for dc in range(-1, 1 + 1):
+    for dr in range(-1, 2):
+        for dc in range(-1, 2):
             r_ = r + dr
             c_ = c + dc
-            if 0 <= r_ < rows and 0 <= c_ < cols:
+            if 0 <= r_ < rows and 0 <= c_ < cols and (r_, c_) != (r, c):
                 yield r_, c_
 
 
 class Population:
-    
-    X = 'X'
-    O = 'O'
-    BLANK = '.'
-    DENSITY = 0.6
 
-    def __init__(self, rows, cols):
+    def __init__(self, rows, cols, density=0.5):
         self.rows = rows
         self.cols = cols
-`       self.matrix = [[BLANK] * cols for i in range(rows)]
-        self.allsatisfied = False
+        self.matrix = [[BLANK] * cols for i in range(rows)]
 
         # populate the matrix
-        numadd = int(DENSITY * rows * cols)
+        numadd = int(density * rows * cols)
         while numadd:
             r = random.randrange(rows)
             c = random.randrange(cols)
@@ -41,20 +43,14 @@ class Population:
                 numadd -= 1
 
     def satisfied(self, r, c):
-        if (0 <= r < self.rows and 0 <= c < self.cols and
-                self.matrix[r][c] != Population.BLANK):
+        if self.matrix[r][c] != BLANK:
             n, m = 0, 0
             for r_, c_ in neighbors(r, c, self.rows, self.cols):
                 if self.matrix[r_][c_] != BLANK:
                     n += 1
                 if self.matrix[r_][c_] == self.matrix[r][c]:
                     m += 1
-            if 1 <= n <= 3:
-                return m >= 1
-            elif 3 <= n < 6:
-                return m >= 2
-            elif 6 <= n:
-                return m >= 3
+            return 2 * m > n
         return True
 
     def better(self, r, c):
@@ -62,7 +58,9 @@ class Population:
             for c_ in range(self.cols):
                 if self.matrix[r_][c_] == BLANK:
                     self.matrix[r_][c_] = self.matrix[r][c]
-                    ok = self.satisfied(r_, c_):
+                    self.matrix[r][c] = BLANK
+                    ok = self.satisfied(r_, c_)
+                    self.matrix[r][c] = self.matrix[r_][c_]
                     self.matrix[r_][c_] = BLANK
                     if ok:
                         yield r_, c_
@@ -75,14 +73,41 @@ class Population:
                 minr, minc, d = r_, c_, d_
         return minr, minc
 
-    def shuffle():
-        self.allsatisfied = True
+
+    def shuffle(self):
         for r in range(self.rows):
             for c in range(self.cols):
                 if not self.satisfied(r, c):
-                    self.allsatisfied = False
                     r_, c_ = self.best(r, c)
                     assert (r_, c_) != (-1, -1)
                     self.matrix[r_][c_] = self.matrix[r][c]
                     self.matrix[r][c] = BLANK
 
+
+    def allsatisfied(self):
+        return all(self.satisfied(r, c) for r in range(self.rows) for
+                c in range(self.cols))
+
+
+    def __str__(self):
+        return '\n'.join(''.join(self.matrix[r][c] for c in
+            range(self.cols)) for r in range(self.rows))
+
+
+def main():
+    n = 10
+    m = 10
+
+    p = Population(n, m, .8)
+    while not p.allsatisfied():
+        print p
+        olds = str(p)
+        p.shuffle()
+        print olds == str(p)
+        print '-' * n
+    print p
+    print p.allsatisfied()
+
+
+if __name__ == "__main__":
+    main()
