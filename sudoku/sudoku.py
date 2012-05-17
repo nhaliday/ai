@@ -5,6 +5,7 @@
 
 
 import sys
+import time
 
 from itertools import combinations, product
 from copy import copy, deepcopy
@@ -42,31 +43,32 @@ for i in range(3):
 
 def trans(puzz, blank='.'):
     A = [[0 for j in range(9)] for i in range(9)]
-    for i, ch in enumerate(puzz):
+    for i, ch in enumerate(puzz[:81]):
         if ch != blank:
             r, c = divmod(i, 9)
             A[r][c] = int(ch)
     return A
 
 
-def find_next(A, i, j, possible):
+def find_next(A, possible):
     def key(r_c):
         r, c = r_c
         return (len(possible[r][c]), -len(ADJ[(r, c)]))
-    return min(((r, c) for r, c in ADJ if A[r][c] != 0), key=key)
+    return min(((r, c) for r, c in ADJ if A[r][c] == 0), key=key)
 
 
 def propagate(A, i, j, possible):
     for r, c in ADJ[(i, j)]:
         if A[r][c] == A[i][j]:
             return False
-        possible[r][c].remove(A[i][j])
-        if not possible[r][c]:
-            return False
-        if len(possible[r][c]) == 1:
-            A[r][c] = tuple(possible[r][c])(0)
-            if not propagate(A, r, c, possible):
+        if A[r][c] == 0 and A[i][j] in possible[r][c]:
+            possible[r][c].remove(A[i][j])
+            if not possible[r][c]:
                 return False
+            if len(possible[r][c]) == 1:
+                A[r][c] = tuple(possible[r][c])[0]
+                if not propagate(A, r, c, possible):
+                    return False
     return True
 
 
@@ -77,7 +79,7 @@ def recur(A, i, j, possible):
 
         Ac[i][j] = v
         if not propagate(Ac, i, j, possiblec):
-            return
+            continue
 
         try:
             r, c = find_next(Ac, possiblec)
@@ -90,27 +92,37 @@ def recur(A, i, j, possible):
 
 
 def solve(A):
-    possible = [[VALS for j in range(9)] for i in range(9)]
+    possible = [[None for j in range(9)] for i in range(9)]
+    for i in range(9):
+        for j in range(9):
+            if A[i][j] == 0:
+                possible[i][j] = set(range(1, 10))
+            else:
+                possible[i][j] = set([A[i][j]])
+
     for i in range(9):
         for j in range(9):
             if A[i][j] != 0:
-                possible[i][j] = [A[i][j]]
                 if not propagate(A, i, j, possible):
                     return
-    i, j = find_blank(A, possible)
-    for solution in recur(A, i, j, possible):
-        yield solution
+
+    try:
+        i, j = find_next(A, possible)
+        for solution in recur(A, i, j, possible):
+            yield solution
+    except:
+        yield A
 
 
 def main():
-    pprint(ADJ)
+    with open('top95.txt') as fin:
+        for line in fin:
+            A = trans(line)
+            tic = time.clock()
+            next(solve(A))
+            toc = time.clock()
+            print(toc - tic)
 
-    puzz = sys.argv[1]
-    A = trans(puzz)
-    pprint(A)
-    for sol in solve(A):
-        pprint(sol)
-    pprint(A)
 
 
 if __name__ == "__main__":
