@@ -30,9 +30,11 @@ class Population:
         self.rows = rows
         self.cols = cols
         self.matrix = [[BLANK] * cols for i in range(rows)]
+        self.steps = 0
+        self.population = int(density * rows * cols)
 
         # populate the matrix
-        numadd = int(density * rows * cols)
+        numadd = self.population
         while numadd:
             r = random.randrange(rows)
             c = random.randrange(cols)
@@ -79,14 +81,32 @@ class Population:
             for c in range(self.cols):
                 if not self.satisfied(r, c):
                     r_, c_ = self.best(r, c)
-                    assert (r_, c_) != (-1, -1)
+                    if (r_, c_) == (-1, -1):
+                        continue
                     self.matrix[r_][c_] = self.matrix[r][c]
                     self.matrix[r][c] = BLANK
+                    self.steps += 1
 
 
     def allsatisfied(self):
         return all(self.satisfied(r, c) for r in range(self.rows) for
                 c in range(self.cols))
+
+    
+    def segregated(self, r, c):
+        for r_, c_ in neighbors(r, c, self.rows, self.cols):
+            if self.matrix[r_][c_] != self.matrix[r][c]:
+                return False
+        return True
+
+
+    def numsegregated(self):
+        c = 0
+        for r in range(self.rows):
+            for c in range(self.cols):
+                if self.segregated(r, c):
+                    c += 1
+        return c
 
 
     def __str__(self):
@@ -95,19 +115,19 @@ class Population:
 
 
 def main():
-    n = 10
-    m = 10
+    x = range(5, 30)
+    steps = []
+    nseg = []
 
-    p = Population(n, m, .8)
-    while not p.allsatisfied():
-        print p
-        olds = str(p)
-        p.shuffle()
-        print olds == str(p)
-        print '-' * n
-    print p
-    print p.allsatisfied()
+    for n in x:
+        p = Population(n, n, .5)
+        while not p.allsatisfied():
+            p.shuffle()
+        steps.append(p.steps)
+        nseg.append(p.numsegregated())
 
+    print zip(x, steps, nseg)
+        
 
 if __name__ == "__main__":
     main()
