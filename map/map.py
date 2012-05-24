@@ -9,7 +9,7 @@ from collections import defaultdict
 from pprint import pprint
 
 
-COLORS = {'RED', 'BLUE', 'GREEN', 'YELLOW'}
+COLORS = {'RED', 'BLUE', 'GREEN'}
 
 
 def check(adj, color):
@@ -22,10 +22,12 @@ def check(adj, color):
 
 
 def find(adj, possible, left):
-    return min(left, key=lambda k: (len(possible[k]), -len(adj[k])))
+    return min(filter(lambda k: possible[k], left), key=lambda k: (len(possible[k]), -len(adj[k])))
 
-
+minleft = float('inf')
 def fourcolor_aux(adj, color, possible, left, target):
+    global minleft
+    minleft = min(minleft, len(left))
     for c in possible[target]:
         color[target] = c
         left.remove(target)
@@ -44,9 +46,9 @@ def fourcolor_aux(adj, color, possible, left, target):
                     possible[n].remove(c)
                     possibleaddback.add(n)
 
-                    if not possible[n]:
-                        ok = False
-                        break
+                    # if not possible[n]:
+                    #     ok = False
+                    #     break
                 
                     if len(possible) == 1:
                         left.remove(n)
@@ -78,9 +80,9 @@ def fourcolor(adj):
     color = {k: None for k in adj}
     possible = {k: COLORS for k in adj}
 
-    vertices = set(adj.keys())
-    found = fourcolor_aux(adj, color, possible, vertices,
-            random.choice(list(vertices)))
+    left = set(adj.keys())
+    found = fourcolor_aux(adj, color, possible, left,
+            find(adj, possible, left))
 
     return found, color
 
@@ -101,6 +103,7 @@ def main():
         pprint(sol)
         pprint(color)
         pprint(check(adj, color))
+        pprint(minleft)
 
 
 if __name__ == "__main__":
