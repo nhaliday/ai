@@ -4,16 +4,18 @@
 # AI: Lab 18 - Tic-Tac-Toe Learning
 
 
-import itertools
+from itertools import *
+import pickle
 
-X = 'X'
-O = 'O'
+
+X = 0
+O = 1
 MAGIC = 12
 R9 = set(range(9))
 
 
 def win(moves):
-    for i, j, k in itertools.combinations(moves, 3):
+    for i, j, k in combinations(moves, 3):
         if i + j + k == MAGIC:
             return True
     return False
@@ -29,34 +31,9 @@ def valid(currX, currO):
     return True
 
 
-def extract(i):
-    j = 0
-    currX = set()
-    currO = set()
-    while j < 9:
-        print(i, i % 3)
-        if i % 3 == 1:
-            currX.add(j)
-        elif i % 3 == 2:
-            currO.add(j)
-        i //= 3
-        j += 1
-    print()
-    return frozenset(currX), frozenset(currO)
-
-
-# b = set()
-# for i in range(3 ** 9):
-#     currX, currO = extract(i)
-#     if (valid(currX, currO) and not win(currX) and not win(currO) and
-#             len(R9 - currX - currO) > 1):
-#         b.add((currX, currO))
-# print(len(b))
-
-
 def generate(turn=X, remaining=R9, currX=set(), currO=set()):
-    if len(remaining) > 1 and not win(currX) and not win(currO):
-        yield (frozenset(currX), frozenset(currO))
+    if remaining and not win(currX) and not win(currO):
+        yield (turn, frozenset(remaining), frozenset(currX), frozenset(currO))
         for i in remaining:
             if turn == X:
                 for j in generate(O, remaining - {i}, currX | {i}, currO):
@@ -66,10 +43,60 @@ def generate(turn=X, remaining=R9, currX=set(), currO=set()):
                     yield j
 
 
-boards = set(generate())
-s = set()
-for currX, currO in boards:
-    print(currX, currO)
-    print(len(currX), len(currO), 9 - len(currX | currO))
-    print()
-print(len(boards))
+def possiblegames(game):
+    turn, remaining, currX, currO = game
+    for i in remaining:
+        if turn == X:
+            yield (turn, remaining - {i}, currX | {i}, currO)
+        else:
+            yield (turn, remaining - {i}, currX, currO | {i})
+
+
+def xgames():
+    return filter(lambda t: t[0] == X, generate())
+
+
+def ogames():
+    return filter(lambda t: t[0] == O, generate())
+
+
+XGAMES = set(xgames())
+OGAMES = set(ogames())
+ALLGAMES = set(generate())
+
+
+class RandomPlayer:
+
+    def play(self, game):
+        return random.choice(game[1])
+
+
+class Learner:
+
+    def __init__(self, matchbox):
+        self.matchbox = matchbox
+        self.history = []
+
+    def play(self, game):
+        for nextgame in possiblegames(game):
+            pass
+        
+
+def main():
+
+    xgames = None
+    ogames = None
+
+    try:
+        with open('xmb.pickle') as xmb:
+            xgames = pickle.load(xmb)
+    except:
+        xgames = dict(zip(XGAMES, repeat(0)))
+    
+    try:
+        with open('omb.pickle') as omb:
+            ogames = pickle.load(omb)
+    except:
+        ogames = dict(zip(OGAMES, repeat(0)))
+
+
