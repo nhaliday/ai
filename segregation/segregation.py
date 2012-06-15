@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Nick Haliday
 # Lab 14/15: Schelling's Segregation Model
 # Torbert, period 1
@@ -115,7 +116,7 @@ class Population:
 
 
 def main():
-    x = range(5, 30)
+    x = list(range(5, 30))
     steps = []
     nseg = []
 
@@ -124,10 +125,11 @@ def main():
         while not p.allsatisfied():
             p.shuffle()
         steps.append(p.steps)
-        nseg.append(p.numsegregated())
+        nseg.append(p.numsegregated() / n)
 
-    print zip(x, steps, nseg)
-        
+    print(x)
+    print(steps)
+    print(nseg)
 
 if __name__ == "__main__":
     main()
